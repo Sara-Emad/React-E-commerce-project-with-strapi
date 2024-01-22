@@ -1,0 +1,30 @@
+saraemad@gmail.com
+123456asdA@@
+
+
+
+
+=== 3 steps to get api link ======
+1- structure ==> content type builder ,creat new collection , name of collection
+2- creat products data
+3- edit role=====> setting ,Users & Permissions plugin, roles,puplic, find
+                ===> http://localhost:1337/api/products
+                ===> http://localhost:1337/api/products?populate=* يجيب لينك الصورة و كل المنتجات
+                ===> http://localhost:1337/api/products?populate=*&filters[productCategory][$eq]=MEN منتجات نساء 
+                ===>http://localhost:1337/api/products?populate=*&filters[productCategory][$eq]=WOMEN   منتجات رجال
+
+
+
+========== product =======
+
+image
+title
+price 
+description
+rating 
+category (men , women) =====> Enumiration
+
+
+
+postgres://saraemad:WZ9CZOr8C9hJnEuS6pX8TtVFSdNSjvHL@dpg-cmk12ofqd2ns73bn9h80-a.oregon-postgres.render.com/ecommercedb_btkz
+WZ9CZOr8C9hJnEuS6pX8TtVFSdNSjvHL    ==>password
