@@ -25,8 +25,8 @@ import IconSection from "./IconSection";
 // repate element التكرار, use array with map and not forget key
 
 const mySlider = [
-  { text: "MEN", link: "src/images/banner-15.jpg" },
-  { text: "WOMEN", link: "src/images/banner-25.jpg" },
+  { text: "MEN", link: "./images/banner-15.jpg" },
+  { text: "WOMEN", link: "./images/banner-25.jpg" },
 ];
 
 const Hero = () => {
@@ -122,7 +122,7 @@ const Hero = () => {
         {/* xs:"none" في حالة الشاشات الصغيرة  ========  md:"block" في حالة الشاشات الميديم */}
         <Box sx={{ display: { xs: "none", md: "block", minWidth: "26.6%" } }}>
           <Box sx={{ position: "relative" }}>
-            <img width={"100%"} src="src/images/banner-17.jpg" />
+            <img width={"100%"} src="./images/banner-17.jpg" />
             <Stack
               sx={{
                 position: "absolute",
@@ -166,7 +166,7 @@ const Hero = () => {
             </Stack>
           </Box>
           <Box sx={{ position: "relative" }}>
-            <img width={"100%"} src="src/images/banner-16.jpg" />
+            <img width={"100%"} src="./images/banner-16.jpg" />
             <Stack
               sx={{
                 position: "absolute",

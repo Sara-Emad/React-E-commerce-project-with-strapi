@@ -1,6 +1,7 @@
 import { useTheme } from "@emotion/react";
 import {
   Box,
+  CircularProgress,
   Container,
   IconButton,
   Rating,
@@ -20,11 +21,13 @@ import Dialog from "@mui/material/Dialog";
 import { Close } from "@mui/icons-material";
 import ProductDetails from "./ProductDetails";
 import { useGetproductByNameQuery } from "../../Redux/product";
+import { AnimatePresence, motion } from "framer-motion";
 
 const Main = () => {
-
   const handleAlignment = (event, newValue) => {
-    setmyData(newValue)
+    if (newValue !== null) {
+      setmyData(newValue);
+    }
   };
 
   const them = useTheme();
@@ -40,37 +43,35 @@ const Main = () => {
     setOpen(false);
   };
 
+  const allProductsAPI = "products?populate=*";
+  const menCategoryAPI =
+    "products?populate=*&filters[productCategory][$eq]=MEN";
+  const womenCategoryAPI =
+    "products?populate=*&filters[productCategory][$eq]=WOMEN";
 
+  const [myData, setmyData] = useState(allProductsAPI);
 
+  const { data, error, isLoading } = useGetproductByNameQuery(myData);
 
-  const allProductsAPI = "products?populate=*"
-  const menCategoryAPI = "products?populate=*&filters[productCategory][$eq]=MEN"
-  const womenCategoryAPI = "products?populate=*&filters[productCategory][$eq]=WOMEN"
-  
-
-
-   const [myData, setmyData] = useState(allProductsAPI);
-
-  const { data, error, isLoading } = useGetproductByNameQuery(
-    myData
-  );
+  const [clickedProduct, setclickedProduct] = useState({});
 
   if (data) {
     console.log(data.data);
   }
 
   if (isLoading) {
-    return <Typography variant="h6">LOADING...................</Typography>;
+    return (
+      <Box sx={{ py: 11, textAlign: "center" }}>
+        <CircularProgress color="inherit" />
+      </Box>
+    );
   }
 
   if (error) {
     return (
-      <Typography variant="h6">
-        {
-          // @ts-ignore
-          error.message
-        }
-      </Typography>
+      <Container sx={{ py: 11, textAlign: "center" }}>
+        <Typography variant="h6">Please Try Again Later</Typography>
+      </Container>
     );
   }
 
@@ -101,7 +102,7 @@ const Main = () => {
             onChange={handleAlignment}
             aria-label="text alignment"
             sx={{
-              "Mui-selected": {
+              ".Mui-selected": {
                 border: "1px solid rgba(233, 69 ,96 , 0.5) !important",
                 color: "#e94560",
                 bgcolor: "initial",
@@ -143,71 +144,79 @@ const Main = () => {
           flexWrap={"wrap"}
           justifyContent={"space-between"}
         >
-          {data.data.map((item) => {
-            return (
-              <Card
-                key={item}
-                sx={{
-                  maxWidth: 333,
-                  my: 6,
-                  ":hover .MuiCardMedia-root": {
-                    rotate: "1deg",
-                    scale: "1.1",
-                    transition: "0.35s",
-                  },
-                }}
-              >
-                <CardMedia
-                  sx={{ height: 277 }}
-                  // @ts-ignore
-                  image={`${
-                    item.attributes.productimg.data[0].attributes.url
-                  }`}
-                  title="green iguana"
-                />
-                <CardContent>
-                  <Stack
-                    direction={"row"}
-                    sx={{
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <Typography gutterBottom variant="h6" component="div">
-                      {item.attributes.productTitle}
-                    </Typography>
-                    <Typography variant="subtitle1" component="p">
-                      ${item.attributes.productPrice}
-                    </Typography>
-                  </Stack>
-                  <Typography variant="body2" color="text.secondary">
-                    {item.attributes.productDescription}
-                  </Typography>
-                </CardContent>
-
-                <CardActions sx={{ justifyContent: "space-between" }}>
-                  <Button
-                    // variant="outlined"
-                    onClick={handleClickOpen}
-                    size="large"
-                    sx={{ textTransform: "capitalize" }}
-                  >
-                    <AddShoppingCartOutlinedIcon
-                      sx={{ mr: 1 }}
-                      fontSize="small"
-                    />
-                    Add to cart
-                  </Button>
-                  <Rating
-                    name="read-only"
-                    value={item.attributes.productRating}
-                    precision={0.5}
-                    readOnly
+          <AnimatePresence>
+            {data.data.map((item) => {
+              return (
+                <Card
+                  component={motion.section}
+                  layout
+                  initial={{ transform: "scale(0)" }}
+                  animate={{ transform: "scale(1)" }}
+                  transition={{ duration: 1.6, type: "spring", stiffness: 50 }}
+                  key={item.id}
+                  sx={{
+                    maxWidth: 360,
+                    my: 6,
+                    ":hover .MuiCardMedia-root": {
+                      rotate: "1deg",
+                      scale: "1.1",
+                      transition: "0.35s",
+                    },
+                  }}
+                >
+                  <CardMedia
+                    sx={{ height: 277 }}
+                    // @ts-ignore
+                    image={`${item.attributes.productimg.data[0].attributes.url}`}
+                    title="green iguana"
                   />
-                </CardActions>
-              </Card>
-            );
-          })}
+                  <CardContent>
+                    <Stack
+                      direction={"row"}
+                      sx={{
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <Typography gutterBottom variant="h6" component="div">
+                        {item.attributes.productTitle}
+                      </Typography>
+                      <Typography variant="subtitle1" component="p">
+                        ${item.attributes.productPrice}
+                      </Typography>
+                    </Stack>
+                    <Typography variant="body2" color="text.secondary">
+                      {item.attributes.productDescription}
+                    </Typography>
+                  </CardContent>
+
+                  <CardActions sx={{ justifyContent: "space-between" }}>
+                    <Button
+                      // variant="outlined"
+                      onClick={() => {
+                        handleClickOpen();
+                        setclickedProduct(item);
+                      }}
+                      size="large"
+                      sx={{ textTransform: "capitalize" }}
+                    >
+                      <AddShoppingCartOutlinedIcon
+                        sx={{ mr: 1 }}
+                        fontSize="small"
+                      />
+                      Add to cart
+                    </Button>
+                    <Rating
+                      name="read-only"
+                      value={item.attributes.productRating}
+                      precision={0.5}
+                      readOnly
+                    />
+                  </CardActions>
+                </Card>
+              );
+            })}
+          </AnimatePresence>
         </Stack>
 
         <Dialog
@@ -228,7 +237,7 @@ const Main = () => {
           >
             <Close />
           </IconButton>
-          <ProductDetails />
+          <ProductDetails clickedProduct={clickedProduct} />
         </Dialog>
       </Container>
     );
